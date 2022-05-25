@@ -62,7 +62,7 @@ int main() {
     int n;
     int checkIfPowerof2;
 
-    FILE *f = fopen("dane16384.txt", "r");
+    FILE *f = fopen("dane.txt", "r");
     fscanf(f, "%i", &n);
 
     // Check if the lenth of sequence is appropriate.

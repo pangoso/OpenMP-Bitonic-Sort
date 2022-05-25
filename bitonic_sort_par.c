@@ -136,7 +136,7 @@ int main() {
     }
     printf("\n");
     
-    printf("Sequential bitonic took: %.2f sec.\n", difftime(end, start));
+    printf("Parrarel bitonic took: %.2f sec.\n", difftime(end, start));
     
     return 0;
 }
