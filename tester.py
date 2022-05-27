@@ -43,10 +43,9 @@ def tester(start_the_power_of_two: Optional[int] = typer.Argument(4),
     if test_check:
         pd.DataFrame(test_data).to_csv('test_results.csv', index=False)
     else:
-        pd.DataFrame(test_data).loc[
-            ['length', 'seq_time', 'par_time']].groupby(
-                ['length']).mean().to_csv('test_results.csv', index=False)
+        pd.DataFrame(test_data).loc[:, ['length', 'seq_time', 'par_time']].groupby(
+                ['length']).mean().to_csv('test_results.csv')
 
 
 if __name__ == '__main__':
-    typer.run(tester)
+    typer.run(tester)    typer.run(tester)
