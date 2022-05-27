@@ -51,14 +51,14 @@ void bitonic_sort_par(int n, int tab[], int start, int direction)
     if (n > 1) {
         int half = n / 2;
 
-        #pragma omp parallel shared(half, tab, start)
+        // #pragma omp parallel shared(half, tab, start)
         {
             // printf("Running thread no. %d\n", omp_get_thread_num());
-            #pragma omp task
+            // #pragma omp task
             {
                 bitonic_sort_par(half, tab, start, 1);
             }
-            #pragma omp task
+            // #pragma omp task
             {
                 bitonic_sort_par(half, tab, start + half, 0);
             }
@@ -72,7 +72,7 @@ void bitonic_sort(int n, int tab[], int t) {
     int div = n / t;
     for (int i=2; i<=t; i=2*i) {
         for (int j=0; j<t; j+=i) {
-            #pragma omp parallel shared(div, tab)
+            // #pragma omp parallel shared(div, tab)
             {
                 if ((j/i) % 2 == 0)
                     bitonic_sort_par(i * div, tab, j * div, 1);
