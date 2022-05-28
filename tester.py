@@ -1,11 +1,15 @@
 import subprocess
-from typing import Optional
+from typing import Optional, Pattern
 import re
 
 import typer
 import pandas as pd
 
 from data_generator import generate_data
+
+
+def get_time(text: str, pattern: Pattern[str]) -> float:
+    return float(max(pattern.findall(text), key=len))
 
 
 def tester(start_the_power_of_two: Optional[int] = typer.Argument(4),
@@ -18,7 +22,7 @@ def tester(start_the_power_of_two: Optional[int] = typer.Argument(4),
         'seq_works': [],
         'par_works': []
     }
-    pattern = re.compile('\d+\.\d+')
+    pattern = re.compile(r'\d+\.\d+')
     for power_of_two in range(start_the_power_of_two, end_the_power_of_two):
         list_length = 2**power_of_two
         print(list_length)
@@ -34,8 +38,8 @@ def tester(start_the_power_of_two: Optional[int] = typer.Argument(4),
             par_sorted = par[1].strip()
             seq_sorted = seq[1].strip()
             test_data['length'].append(list_length)
-            test_data['seq_time'].append(float(pattern.findall(seq[2])[0]))
-            test_data['par_time'].append(float(pattern.findall(par[2])[0]))
+            test_data['seq_time'].append(get_time(seq[2], pattern))
+            test_data['par_time'].append(get_time(par[2], pattern))
             formated_set = str(dataset_sorted)[1:-1].replace(', ', ' ').strip()
             test_data['seq_works'].append(seq_sorted == formated_set)
             test_data['par_works'].append(par_sorted == formated_set)
@@ -48,4 +52,4 @@ def tester(start_the_power_of_two: Optional[int] = typer.Argument(4),
 
 
 if __name__ == '__main__':
-    typer.run(tester)    typer.run(tester)
+    typer.run(tester)

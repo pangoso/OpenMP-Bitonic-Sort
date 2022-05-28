@@ -59,6 +59,8 @@ void bitonic_sort_seq(int n, int tab[], int start, int direction) {
 }
 
 int main() {
+    struct timeval start, stop;
+    double secs = 0;
     int n;
     int checkIfPowerof2;
 
@@ -87,14 +89,14 @@ int main() {
     printf("\n");
 
     // Start time.
-    time_t start = time(NULL);
+    gettimeofday(&start, NULL);
 
     // Sort data.
     int up = 1;
     bitonic_sort_seq(n, tab, 0, up);
 
     // Stop the time;
-   time_t end = time(NULL);
+    gettimeofday(&stop, NULL);
 
     // Print result.
      for (int i=0; i<n; ++i) {
@@ -102,7 +104,8 @@ int main() {
     }
     printf("\n");
 
-    printf("Sequential bitonic took: %.2f sec.\n", difftime(end, start));
+    secs = (double)(stop.tv_usec - start.tv_usec) / 1000000 + (double)(stop.tv_sec - start.tv_sec);
+    printf("Sequential bitonic took: %.7f sec.\n", secs);
     
     return 0;
 }
