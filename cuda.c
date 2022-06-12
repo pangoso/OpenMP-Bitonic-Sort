@@ -42,7 +42,7 @@ void bitonicBuildRunner(float* a, int size) {
 		int i = blocks, blockSize = size * (1 - 1 / blocks);
 		while(i != 1) {
 			dim3 numBlocks = i, threadsPerBlock = blockSize;
-			for(j = 0; j < size; j += blockSize, a++) {
+			for(int j = 0; j < size; j += blockSize, a++) {
 				bitonicBuild<<<numBlocks, threadsPerBlock>>>(a, blockSize, i);
 			}
 			i /= 2;
@@ -100,8 +100,8 @@ int main() {
     }
 	
 	array = (float*) malloc(n * sizeof(float));
-	for(i = 0; i < n; i++) {
-		fscanf(f,"%d",(arr + i));
+	for(int i = 0; i < n; i++) {
+		fscanf(f,"%d",(array + i));
 	}
 	// END
     
@@ -109,7 +109,7 @@ int main() {
     int size;
 	
 	/// Start time.
-    time_t  = time(NULL);
+    time_t start = time(NULL);
 
     bitonicBuildRunner(array, size);
 	bitonicSortRunner(array, size);
