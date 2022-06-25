@@ -15,16 +15,14 @@ void print_time(clock_t start, clock_t stop)
 
 void print_array(int *array, int length) 
 {
-  int i;
-  for (i = 0; i < length; ++i) {printf("%d ",  array[i]);}
+  for (int i = 0; i < length; ++i) {printf("%d ",  array[i]);}
   printf("\n");
 }
 
 void fill_array(int *array, int length)
 {
   srand(time(NULL));
-  int i;
-  for (i = 0; i < length; ++i) {array[i] = (int)rand();}
+  for (int i = 0; i < length; ++i) {array[i] = (int)rand();}
 }
 
 __global__ void bitonic_sort_step(int *dev_values, int j, int k)
