@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <time.h>
 
-/* Every thread gets exactly one value in the unsorted array. */
 #define THREADS 512 // 2^9
 #define BLOCKS 262144 // 2^15
 #define NUM_VALS THREADS*BLOCKS
