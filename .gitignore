@@ -1,5 +1,7 @@
 .vs/
 .vscode/
+.idea/
+__pycache__/
 
 CppProperties.json
 *.Identifier

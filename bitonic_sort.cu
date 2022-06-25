@@ -1,11 +1,3 @@
-/*
- * Parallel bitonic sort using CUDA.
- * Compile with
- * nvcc -arch=sm_11 bitonic_sort.cu
- * Based on http://www.tools-of-computing.com/tc/CS/Sorts/bitonic_sort.htm
- * License: BSD 3
- */
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
@@ -15,56 +7,42 @@
 #define BLOCKS 262144 // 2^15
 #define NUM_VALS THREADS*BLOCKS
 
-void print_elapsed(clock_t start, clock_t stop)
+void print_time(clock_t start, clock_t stop)
 {
-  double elapsed = ((double) (stop - start)) / CLOCKS_PER_SEC;
-  printf("Elapsed time: %.3fs\n", elapsed);
+  double timed = ((double) (stop - start)) / CLOCKS_PER_SEC;
+  printf("Elapsed time: %.8fs\n", timed);
 }
 
-int random_int()
-{
-  return (int)rand();
-}
-
-void array_print(int *arr, int length) 
+void print_array(int *array, int length) 
 {
   int i;
-  for (i = 0; i < length; ++i) {
-    printf("%d ",  arr[i]);
-  }
+  for (i = 0; i < length; ++i) {printf("%d ",  array[i]);}
   printf("\n");
 }
 
-void array_fill(int *arr, int length)
+void fill_array(int *array, int length)
 {
   srand(time(NULL));
   int i;
-  for (i = 0; i < length; ++i) {
-    arr[i] = random_int();
-  }
+  for (i = 0; i < length; ++i) {array[i] = (int)rand();}
 }
 
 __global__ void bitonic_sort_step(int *dev_values, int j, int k)
 {
-  unsigned int i, ixj; /* Sorting partners: i and ixj */
+  unsigned int i, ixj; 
   i = threadIdx.x + blockDim.x * blockIdx.x;
   ixj = i^j;
 
-  /* The threads with the lowest ids sort the array. */
   if ((ixj)>i) {
     if ((i&k)==0) {
-      /* Sort ascending */
       if (dev_values[i]>dev_values[ixj]) {
-        /* exchange(i,ixj); */
         int temp = dev_values[i];
         dev_values[i] = dev_values[ixj];
         dev_values[ixj] = temp;
       }
     }
     if ((i&k)!=0) {
-      /* Sort descending */
       if (dev_values[i]<dev_values[ixj]) {
-        /* exchange(i,ixj); */
         int temp = dev_values[i];
         dev_values[i] = dev_values[ixj];
         dev_values[ixj] = temp;
@@ -73,9 +51,6 @@ __global__ void bitonic_sort_step(int *dev_values, int j, int k)
   }
 }
 
-/**
- * Inplace bitonic sort using CUDA.
- */
 void bitonic_sort(int *values)
 {
   int *dev_values;
@@ -84,13 +59,11 @@ void bitonic_sort(int *values)
   cudaMalloc((void**) &dev_values, size);
   cudaMemcpy(dev_values, values, size, cudaMemcpyHostToDevice);
 
-  dim3 blocks(BLOCKS,1);    /* Number of blocks   */
-  dim3 threads(THREADS,1);  /* Number of threads  */
+  dim3 blocks(BLOCKS,1);
+  dim3 threads(THREADS,1);
 
   int j, k;
-  /* Major step */
   for (k = 2; k <= NUM_VALS; k <<= 1) {
-    /* Minor step */
     for (j=k>>1; j>0; j=j>>1) {
       bitonic_sort_step<<<blocks, threads>>>(dev_values, j, k);
     }
@@ -104,13 +77,12 @@ int main(void)
   clock_t start, stop;
 
   int *values = (int*) malloc( NUM_VALS * sizeof(int));
-  array_fill(values, NUM_VALS);
-  array_print(values, 20);
+  fill_array(values, NUM_VALS);
 
   start = clock();
-  bitonic_sort(values); /* Inplace */
+  bitonic_sort(values);
   stop = clock();
+  print_array(values, NUM_VALS);
 
-  array_print(values, 20);
-  print_elapsed(start, stop);
+  print_time(start, stop);
 }
